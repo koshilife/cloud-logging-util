@@ -1,14 +1,11 @@
 # CloudLoggingUtil
 
-[![Test](https://github.com/koshilife/cloud-logging-util/workflows/Test/badge.svg)](https://github.com/
-koshilife/cloud-logging-util/actions?query=workflow%3ATest)
-[![codecov](https://codecov.io/gh/koshilife/cloud-logging-util/branch/master/graph/badge.svg)](https://
-codecov.io/gh/koshilife/cloud-logging-util)
+[![Test](https://github.com/koshilife/cloud-logging-util/workflows/Test/badge.svg)](https://github.com/koshilife/cloud-logging-util/actions?query=workflow%3ATest)
+[![codecov](https://codecov.io/gh/koshilife/cloud-logging-util/branch/master/graph/badge.svg)](https://codecov.io/gh/koshilife/cloud-logging-util)
 [![Gem Version](https://badge.fury.io/rb/cloud-logging-util.svg)](http://badge.fury.io/rb/cloud-logging-util)
-[![license](https://img.shields.io/github/license/koshilife/cloud-logging-util)](https://github.com/kos
-hilife/cloud-logging-util/blob/master/LICENSE.txt)
+[![license](https://img.shields.io/github/license/koshilife/cloud-logging-util)](https://github.com/koshilife/cloud-logging-util/blob/master/LICENSE.txt)
 
-xxx
+CloudLoggingUtil is a small library to output structured logs in Cloud Logging.
 
 ## Installation
 
@@ -28,7 +25,41 @@ Or install it yourself as:
 
 ## Usage
 
-xxx
+Insert CloudLoggingUtil::AccessLogging on the head of rack middlewares.
+
+### Rails
+
+```rb
+# config/application.rb
+class Application < Rails::Application
+  # setting for Access Logging ($stdout)
+  config.middleware.insert_before(0, CloudLoggingUtil::AccessLogging)
+
+  # setting for Application Logger ($stderr)
+  config.logger = ActiveSupport::Logger.new($stderr)
+  config.logger.formatter = CloudLoggingUtil::Formatter.new
+  config.colorize_logging = false
+end
+```
+
+Middleware check.
+
+```sh
+bundle exec rake middleware
+```
+
+setup.
+
+```rb
+class YourController < ActionController::Base
+  prepend_before_action do
+    # set trace_id to request_id
+    CloudLoggingUtil.setup_trace_id(request.request_id)
+  end
+end
+```
+
+More in-depth method documentation can be found at [RubyDoc.info](https://www.rubydoc.info/gems/cloud-logging-util/).
 
 ## Contributing
 
